@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # Modules
 from src import db
+from src.schemas.users_schema import UsersSchema
 
 
 class UsersRepository(db.Model):
@@ -43,3 +44,21 @@ class UsersRepository(db.Model):
             return UsersRepository.query.filter_by(id=user_id).first()
         except NoResultFound:
             return None
+
+    @classmethod
+    def delete(cls, user_id):
+        UsersRepository.query.filter_by(id=user_id).delete()
+        db.session.commit()
+
+    @classmethod
+    def update(self, user_id, users_schema: UsersSchema):
+        user = UsersRepository.query.filter_by(id=user_id).first()
+        if not user:
+            return False
+
+        user.name = users_schema.name
+        user.username = users_schema.username
+        user.password = users_schema.password
+        user.username = users_schema.email
+        db.session.commit()
+        return True

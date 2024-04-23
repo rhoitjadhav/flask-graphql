@@ -25,9 +25,11 @@ def create_user():
 
 @bp.route("", methods=["PUT"])
 def update_user():
-    return []
+    payload = request.get_json()
+    user = UsersSchema(**payload)
+    return UsersService.update_user(user)
 
 
-@bp.route("", methods=["DELETE"])
-def delete_user():
-    return []
+@bp.route("/<int:id>", methods=["DELETE"])
+def delete_user(id):
+    return UsersService.delete_user(id)
