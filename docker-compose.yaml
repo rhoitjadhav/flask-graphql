@@ -7,9 +7,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
-    command: ["gunicorn", "--reload", "--bind", "0.0.0.0", "src:create_app()"]
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; flask db upgrade head; ./inotify-restart.sh'
     volumes:
-      - ./:/flask-graphql
+      - ./:/app
     environment:
       - FLASK_APP=src
       - DATABASE_URI=postgresql://backend:backend123@db:5432/backend
